@@ -1,0 +1,142 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae0543fe805424df99fe08ce744cbe49, type: 3}
+  m_Name: M1_RunDefault
+  m_EditorClassIdentifier: 
+  m_PoseEntries:
+  - path: Bones/Hips
+    localPosition: {x: -0.10932064, y: 0.05212021, z: 0}
+    localRotation: {x: 0, y: 0, z: 0.59755886, w: 0.80182505}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1
+    localPosition: {x: 0.450001, y: 0, z: 0}
+    localRotation: {x: 0, y: 0, z: 0.05064051, w: 0.99871695}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head
+    localPosition: {x: 0.4500223, y: 0.00000003686, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.0000043162404, w: 1}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/FrontHair1_1
+    localPosition: {x: 0.8101656, y: 0.26958522, z: 0}
+    localRotation: {x: -0, y: -0, z: 0.9985917, w: 0.05305382}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/FrontHair1_1/FrontHair1_2
+    localPosition: {x: 0.37795746, y: 0.000000007450581, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.074670285, w: 0.99720836}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/FrontHair1_1/FrontHair1_2/FrontHair1_3
+    localPosition: {x: 0.33000007, y: -0.00000021606684, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.07601701, w: 0.99710655}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/FrontHair2_1
+    localPosition: {x: 1.1475977, y: 0.40955845, z: 0}
+    localRotation: {x: -0, y: -0, z: 0.9638811, w: 0.26633322}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/FrontHair2_1/FrontHair2_2
+    localPosition: {x: 0.3578195, y: -0.00000038742962, z: 0}
+    localRotation: {x: 0, y: 0, z: 0.022593722, w: 0.9997448}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/FrontHair2_1/FrontHair2_2/FrontHair2_3
+    localPosition: {x: 0.33182028, y: -0.00000029415241, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.011464061, w: 0.9999343}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/FrontHair3_1
+    localPosition: {x: 1.2188019, y: -0.071539894, z: 0}
+    localRotation: {x: -0, y: -0, z: 0.9202331, w: -0.39137068}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/FrontHair3_1/FrontHair3_2
+    localPosition: {x: 0.32973891, y: 0.00000029802322, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.19469468, w: 0.98086387}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/FrontHair3_1/FrontHair3_2/FrontHair3_3
+    localPosition: {x: 0.31481206, y: 0.00000020116568, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.13346866, w: 0.99105304}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/FrontHair4_1
+    localPosition: {x: 1.3708639, y: 0.32048038, z: 0}
+    localRotation: {x: -0, y: -0, z: 0.5934561, w: 0.8048663}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/FrontHair4_1/FrontHair4_2
+    localPosition: {x: 0.26748762, y: -0.0000005066392, z: 0}
+    localRotation: {x: 0, y: 0, z: 0.019565722, w: 0.9998086}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/MiddleHair1_1
+    localPosition: {x: 0.98014426, y: 0.7055742, z: 0}
+    localRotation: {x: -0, y: -0, z: 0.9560917, w: 0.293068}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/MiddleHair1_1/MiddleHair1_2
+    localPosition: {x: 0.26257378, y: -0.00000047683685, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.19482848, w: 0.98083735}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/MiddleHair2_1
+    localPosition: {x: 0.5342537, y: 0.63342816, z: 0}
+    localRotation: {x: 0, y: 0, z: 0.97787243, w: 0.20920207}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/MiddleHair2_1/MiddleHair2_2
+    localPosition: {x: 0.3123272, y: -0.0000004023309, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.052479036, w: 0.99862206}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/MiddleHair3_1
+    localPosition: {x: 0.3683625, y: 0.34928027, z: 0}
+    localRotation: {x: -0, y: -0, z: 0.9920982, w: 0.12546358}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/MiddleHair3_1/MiddleHair3_2
+    localPosition: {x: 0.36027482, y: -0.00000022351725, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.074765086, w: 0.9972012}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/BackHair1_1
+    localPosition: {x: 1.3375885, y: 0.84181464, z: 0}
+    localRotation: {x: -0, y: -0, z: 0.9510069, w: 0.30916956}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/BackHair1_1/BackHair1_2
+    localPosition: {x: 0.5793158, y: -0.00000035762733, z: 0}
+    localRotation: {x: 0, y: 0, z: 0.12871012, w: 0.9916823}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/BackHair1_1/BackHair1_2/BackHair1_3
+    localPosition: {x: 0.5400811, y: -0.0000004149042, z: 0}
+    localRotation: {x: 0, y: 0, z: 0.03496481, w: 0.9993886}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/Head/GameObject/BackHair1_1/BackHair1_2/BackHair1_3/BackHair1_4
+    localPosition: {x: 0.76099706, y: -0.00000051602547, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.12168094, w: 0.9925693}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/F_arm
+    localPosition: {x: 0.16986093, y: 0.14617401, z: 0}
+    localRotation: {x: 0, y: 0, z: 0.88048404, w: 0.4740759}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/F_arm/F_hand
+    localPosition: {x: 0.33928463, y: -0.00000011920929, z: 0}
+    localRotation: {x: 0, y: 0, z: 0.080818646, w: 0.99672884}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/Spine1/B_arm
+    localPosition: {x: 0.17922416, y: -0.030035082, z: 0}
+    localRotation: {x: 0, y: 0, z: 0.8520566, w: -0.5234496}
+    localScale: {x: 1.0000019, y: 1.0000019, z: 1}
+  - path: Bones/Hips/Spine1/B_arm/B_hand
+    localPosition: {x: 0.31735837, y: 0.00000011920907, z: 0}
+    localRotation: {x: 0, y: 0, z: 0.017024502, w: 0.99985516}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/F_leg
+    localPosition: {x: 0.008867795, y: 0.033904392, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.9952654, w: -0.0971947}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/F_leg/F_foot
+    localPosition: {x: 0.34566003, y: 0.000000044703484, z: 0}
+    localRotation: {x: 0, y: 0, z: 0.020742077, w: -0.9997849}
+    localScale: {x: 1, y: 1, z: 1}
+  - path: Bones/Hips/B_leg
+    localPosition: {x: 0.055428274, y: 0.02906939, z: 0}
+    localRotation: {x: 0, y: 0, z: -0.95874304, w: 0.28427425}
+    localScale: {x: 1.0000002, y: 1.0000002, z: 1}
+  - path: Bones/Hips/B_leg/B_foot
+    localPosition: {x: 0.36808446, y: -0.000000029802315, z: 0}
+    localRotation: {x: 0, y: 0, z: 0.000054729495, w: -1}
+    localScale: {x: 1, y: 1, z: 1}
