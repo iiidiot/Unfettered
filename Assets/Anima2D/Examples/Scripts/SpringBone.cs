@@ -92,11 +92,17 @@ namespace UnityChan
 
 			float sqrDt = Time.deltaTime * Time.deltaTime;
 
-			//stiffness
-			Vector3 force = trs.rotation * (Vector3.right * stiffnessForce) / sqrDt;
+            //stiffness
+            //Vector3 force = trs.rotation * (Vector3.right * stiffnessForce) / sqrDt;
 
-			//drag
-			force += (prevTipPos - currTipPos) * dragForce / sqrDt;
+            Vector3 force;
+            if (managerRef.transform.parent.localScale.x > 0)
+                force = trs.rotation * (Vector3.right * stiffnessForce) / sqrDt;
+            else
+                force = trs.rotation * (Vector3.left * stiffnessForce) / sqrDt;
+
+            //drag
+            force += (prevTipPos - currTipPos) * dragForce / sqrDt;
 
 			force += springForce / sqrDt;
 

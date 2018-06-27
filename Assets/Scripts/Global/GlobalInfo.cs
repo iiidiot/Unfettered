@@ -6,12 +6,12 @@ public class GlobalInfo{
 
 	public class PlayerGlobalInfo
     {
-        enum MoveStaete
+        enum AnimeStaete
         {
-            OnGround, InAir
+            Idle, IdleJump, Run
         };
 
-        static MoveStaete moveState = MoveStaete.OnGround;
+        static AnimeStaete moveState = AnimeStaete.Idle;
 
     }  
 }

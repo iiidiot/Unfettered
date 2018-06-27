@@ -4,34 +4,45 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
-    public Animator animator;
+    public GameObject playerIdle;
+    public GameObject playerRun;
+    public float speed = 1.0f;
 
 	// Use this for initialization
 	void Start () {
-        animator = GetComponent<Animator>();
-      
-    }
+        PlayerIdle();
+	}
 	
 	// Update is called once per frame
 	void Update () {
-        InputControl();
-	}
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            PlayerRun();
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            
 
-    void InputControl()
+            Vector3 move = new Vector3(speed * Time.deltaTime, 0, 0);
+
+            transform.Translate(move);
+        }
+        if (Input.GetKeyUp(KeyCode.D))
+        {
+            PlayerIdle();
+        }
+
+    }
+
+    void PlayerRun()
     {
-        AnimatorStateInfo animatorInfo;
-        animatorInfo = animator.GetCurrentAnimatorStateInfo(0);
+        playerIdle.SetActive(false);
+        playerRun.SetActive(true);
+    }
 
-        if (Input.GetKeyDown(KeyCode.Space) && animatorInfo.IsName("M1_Idle"))
-        {
-            animator.SetBool("isIdle", false);
-            animator.SetBool("isIdleJump", true);
-        }
-
-        if ((animatorInfo.normalizedTime > 1.0f) && (animatorInfo.IsName("M1_IdleJump")))
-        {
-            animator.SetBool("isIdleJump", false);
-            animator.SetBool("isIdle", true);
-        }
+    void PlayerIdle()
+    {
+        playerIdle.SetActive(true);
+        playerRun.SetActive(false);
     }
 }
