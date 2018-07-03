@@ -6,30 +6,62 @@ public class PlayerController : MonoBehaviour {
 
     public GameObject playerIdle;
     public GameObject playerRun;
-    public float speed = 1.0f;
 
-	// Use this for initialization
-	void Start () {
+    public float speed = 1.0f;
+    public int moveDirection = 1;
+
+    public Animator idleAnimator;
+    public Animator runAnimator;
+
+    // Use this for initialization
+    void Start () {
+        idleAnimator = playerIdle.GetComponent<Animator>();
+        runAnimator = playerRun.GetComponent<Animator>();
+
         PlayerIdle();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyDown(KeyCode.D))
+
+        //run
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
         {
             PlayerRun();
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
+            if (Input.GetKey(KeyCode.D))
+            {
+                moveDirection = 1;
+                transform.localScale = new Vector3(1, 1, 1);
+            }
+            else
+            {
+                moveDirection = -1;
+                transform.localScale = new Vector3(-1, 1, 1);
+            }
             
 
-            Vector3 move = new Vector3(speed * Time.deltaTime, 0, 0);
+            Vector3 move = new Vector3(moveDirection * speed * Time.deltaTime, 0, 0);
 
             transform.Translate(move);
         }
-        if (Input.GetKeyUp(KeyCode.D))
+
+        //idle
+        if (!Input.anyKey)
         {
             PlayerIdle();
+        }
+
+        //jump
+        if (Input.GetKeyDown(KeyCode.Space) && GameInfo.PlayerGlobalInfo.placeState != GameInfo.ChPlaceState.InAir)
+        {
+           if(GameInfo.PlayerGlobalInfo.moveState == GameInfo.ChMoveState.Idle)
+            {
+                PlayerIdleJump();
+            }
+           else if(GameInfo.PlayerGlobalInfo.moveState == GameInfo.ChMoveState.Run)
+            {
+                PlayerRunJump();
+            }
         }
 
     }
@@ -38,11 +70,29 @@ public class PlayerController : MonoBehaviour {
     {
         playerIdle.SetActive(false);
         playerRun.SetActive(true);
+
+        GameInfo.PlayerGlobalInfo.moveState = GameInfo.ChMoveState.Run;
+        GameInfo.PlayerGlobalInfo.placeState = GameInfo.ChPlaceState.OnGround;
     }
 
     void PlayerIdle()
     {
         playerIdle.SetActive(true);
         playerRun.SetActive(false);
+
+        GameInfo.PlayerGlobalInfo.moveState = GameInfo.ChMoveState.Idle;
+        GameInfo.PlayerGlobalInfo.placeState = GameInfo.ChPlaceState.OnGround;
+    }
+
+    void PlayerIdleJump()
+    {
+        GameInfo.PlayerGlobalInfo.moveState = GameInfo.ChMoveState.IdleJump;
+        GameInfo.PlayerGlobalInfo.placeState = GameInfo.ChPlaceState.InAir;
+    }
+
+    void PlayerRunJump()
+    {
+        GameInfo.PlayerGlobalInfo.moveState = GameInfo.ChMoveState.RunJump;
+        GameInfo.PlayerGlobalInfo.placeState = GameInfo.ChPlaceState.InAir;
     }
 }
