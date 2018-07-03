@@ -13,6 +13,19 @@ public class PlayerController : MonoBehaviour {
     public Animator idleAnimator;
     public Animator runAnimator;
 
+    public bool isOnGround = true;
+    public MoveState moveState = MoveState.Idle;
+
+    //enum type   
+    public enum MoveState
+    {
+        Idle, IdleJump, Run, RunJump
+    };
+
+    //================================================================
+    //The following is function
+    //================================================================
+
     // Use this for initialization
     void Start () {
         idleAnimator = playerIdle.GetComponent<Animator>();
@@ -71,8 +84,8 @@ public class PlayerController : MonoBehaviour {
         playerIdle.SetActive(false);
         playerRun.SetActive(true);
 
-        GameInfo.PlayerGlobalInfo.moveState = GameInfo.ChMoveState.Run;
-        GameInfo.PlayerGlobalInfo.placeState = GameInfo.ChPlaceState.OnGround;
+        moveState = MoveState.Run;
+        isOnGround = true;
     }
 
     void PlayerIdle()
@@ -80,19 +93,19 @@ public class PlayerController : MonoBehaviour {
         playerIdle.SetActive(true);
         playerRun.SetActive(false);
 
-        GameInfo.PlayerGlobalInfo.moveState = GameInfo.ChMoveState.Idle;
-        GameInfo.PlayerGlobalInfo.placeState = GameInfo.ChPlaceState.OnGround;
+        moveState = MoveState.Idle;
+        isOnGround = true;
     }
 
     void PlayerIdleJump()
     {
-        GameInfo.PlayerGlobalInfo.moveState = GameInfo.ChMoveState.IdleJump;
-        GameInfo.PlayerGlobalInfo.placeState = GameInfo.ChPlaceState.InAir;
+        moveState = MoveState.IdleJump;
+        isOnGround = false;
     }
 
     void PlayerRunJump()
     {
-        GameInfo.PlayerGlobalInfo.moveState = GameInfo.ChMoveState.RunJump;
-        GameInfo.PlayerGlobalInfo.placeState = GameInfo.ChPlaceState.InAir;
+        moveState = MoveState.RunJump;
+        isOnGround = false;
     }
 }
