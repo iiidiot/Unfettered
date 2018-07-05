@@ -16,11 +16,17 @@ public class PlayerController : MonoBehaviour {
     public bool isOnGround = true;
     public MoveState moveState = MoveState.Idle;
 
+    public float idleJumpAnimeLength;
+    public float runJumpAnimeLength;
+
     //enum type   
     public enum MoveState
     {
         Idle, IdleJump, Run, RunJump
     };
+
+    //private
+    Rigidbody2D r;
 
     //================================================================
     //The following is function
@@ -28,8 +34,11 @@ public class PlayerController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        idleAnimator = playerIdle.GetComponent<Animator>();
-        runAnimator = playerRun.GetComponent<Animator>();
+        idleAnimator = playerIdle.transform.parent.GetComponent<Animator>();
+        runAnimator = playerRun.transform.parent.GetComponent<Animator>();
+        r = GetComponent<Rigidbody2D>();
+        idleJumpAnimeLength = idleAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.length;
+        runJumpAnimeLength = runAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.length;
 
         PlayerIdle();
 	}
@@ -51,17 +60,20 @@ public class PlayerController : MonoBehaviour {
                 moveDirection = -1;
                 transform.localScale = new Vector3(-1, 1, 1);
             }
-            
 
-            Vector3 move = new Vector3(moveDirection * speed * Time.deltaTime, 0, 0);
 
-            transform.Translate(move);
+            //Vector3 move = new Vector3(moveDirection * speed * Time.deltaTime, 0, 0);
+            //transform.Translate(move);
+
+            r.velocity = new Vector2(speed * moveDirection, r.velocity.y);
+
         }
 
         //idle
         if (!Input.anyKey)
         {
             PlayerIdle();
+            r.velocity = new Vector2(0, r.velocity.y);
         }
 
         //jump
@@ -101,11 +113,17 @@ public class PlayerController : MonoBehaviour {
     {
         moveState = MoveState.IdleJump;
         isOnGround = false;
+
+        //v = gt
+        r.velocity = new Vector2(r.velocity.x, Physics2D.gravity.y * idleJumpAnimeLength * 0.5f);
     }
 
     void PlayerRunJump()
     {
         moveState = MoveState.RunJump;
         isOnGround = false;
+
+        //v = gt
+        r.velocity = new Vector2(r.velocity.x, Physics2D.gravity.y * runJumpAnimeLength * 0.5f);
     }
 }
