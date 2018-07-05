@@ -530,7 +530,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerIdle: {fileID: 941206152}
   playerRun: {fileID: 1483185427}
-  m_g: 100
+  m_g: 120
   speed: 4.5
   moveDirection: 1
   idleAnimator: {fileID: 0}
@@ -572,7 +572,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!1 &1310008821
 GameObject:
@@ -1131,6 +1131,46 @@ Prefab:
     - target: {fileID: 4744789371411356, guid: 55f1d0443fb1cbb4899bbb5136eea037, type: 2}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 1.4260001
+      objectReference: {fileID: 0}
+    - target: {fileID: 114551648952693402, guid: 55f1d0443fb1cbb4899bbb5136eea037,
+        type: 2}
+      propertyPath: stiffnessForce
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 114104134737868502, guid: 55f1d0443fb1cbb4899bbb5136eea037,
+        type: 2}
+      propertyPath: stiffnessForce
+      value: 0.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 114551648952693402, guid: 55f1d0443fb1cbb4899bbb5136eea037,
+        type: 2}
+      propertyPath: dragForce
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114104134737868502, guid: 55f1d0443fb1cbb4899bbb5136eea037,
+        type: 2}
+      propertyPath: dragForce
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114394544857011054, guid: 55f1d0443fb1cbb4899bbb5136eea037,
+        type: 2}
+      propertyPath: dragForce
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114810110404892432, guid: 55f1d0443fb1cbb4899bbb5136eea037,
+        type: 2}
+      propertyPath: dragForce
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114635493636425162, guid: 55f1d0443fb1cbb4899bbb5136eea037,
+        type: 2}
+      propertyPath: dragForce
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114523451488739968, guid: 55f1d0443fb1cbb4899bbb5136eea037,
+        type: 2}
+      propertyPath: dragForce
+      value: 0.2
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114181975596381542, guid: 55f1d0443fb1cbb4899bbb5136eea037, type: 2}
