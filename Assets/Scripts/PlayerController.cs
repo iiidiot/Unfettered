@@ -7,13 +7,14 @@ public class PlayerController : MonoBehaviour {
     public GameObject playerIdle;
     public GameObject playerRun;
 
+    public float m_g = 9.81f;
     public float speed = 1.0f;
     public int moveDirection = 1;
 
     public Animator idleAnimator;
     public Animator runAnimator;
 
-    public bool isOnGround = true;
+    public bool isOnGround = false;
     public MoveState moveState = MoveState.Idle;
 
     public float idleJumpAnimeLength;
@@ -37,8 +38,10 @@ public class PlayerController : MonoBehaviour {
         idleAnimator = playerIdle.transform.parent.GetComponent<Animator>();
         runAnimator = playerRun.transform.parent.GetComponent<Animator>();
         r = GetComponent<Rigidbody2D>();
-        idleJumpAnimeLength = idleAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.length;
-        runJumpAnimeLength = runAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.length;
+
+        //jump is the second anime clip in animator, so the array index is 1
+        idleJumpAnimeLength = idleAnimator.runtimeAnimatorController.animationClips[1].length;
+        runJumpAnimeLength = runAnimator.runtimeAnimatorController.animationClips[1].length;
 
         PlayerIdle();
 	}
@@ -47,7 +50,7 @@ public class PlayerController : MonoBehaviour {
 	void Update () {
 
         //run
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
+        if (isOnGround && (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A)))
         {
             PlayerRun();
             if (Input.GetKey(KeyCode.D))
@@ -70,14 +73,14 @@ public class PlayerController : MonoBehaviour {
         }
 
         //idle
-        if (!Input.anyKey)
+        if (!Input.anyKey && moveState!=MoveState.IdleJump)
         {
             PlayerIdle();
             r.velocity = new Vector2(0, r.velocity.y);
         }
 
         //jump
-        if (Input.GetKeyDown(KeyCode.Space) && GameInfo.PlayerGlobalInfo.placeState != GameInfo.ChPlaceState.InAir)
+        if (Input.GetKeyDown(KeyCode.Space) && isOnGround)
         {
            if(GameInfo.PlayerGlobalInfo.moveState == GameInfo.ChMoveState.Idle)
             {
@@ -91,22 +94,34 @@ public class PlayerController : MonoBehaviour {
 
     }
 
+    void FixedUpdate()
+    {
+        if (r.gravityScale == 0)
+        {
+            float new_vy = r.velocity.y - m_g * Time.fixedDeltaTime;
+            r.velocity = new Vector2(r.velocity.x, new_vy);
+        }
+    }
+
     void PlayerRun()
     {
+        r.gravityScale = 1;
         playerIdle.SetActive(false);
         playerRun.SetActive(true);
 
         moveState = MoveState.Run;
-        isOnGround = true;
     }
 
     void PlayerIdle()
     {
+        r.gravityScale = 1;
         playerIdle.SetActive(true);
         playerRun.SetActive(false);
 
         moveState = MoveState.Idle;
-        isOnGround = true;
+
+        idleAnimator.SetBool("isIdle", true);
+        idleAnimator.SetBool("isIdleJump", false);
     }
 
     void PlayerIdleJump()
@@ -114,8 +129,14 @@ public class PlayerController : MonoBehaviour {
         moveState = MoveState.IdleJump;
         isOnGround = false;
 
+        //when jump, block physics gravity, use my own gravity to simulate y move
+        r.gravityScale = 0;
+
         //v = gt
-        r.velocity = new Vector2(r.velocity.x, Physics2D.gravity.y * idleJumpAnimeLength * 0.5f);
+        r.velocity = new Vector2(r.velocity.x, m_g * idleJumpAnimeLength * 0.5f);
+
+        idleAnimator.SetBool("isIdle", false);
+        idleAnimator.SetBool("isIdleJump", true);
     }
 
     void PlayerRunJump()
@@ -123,7 +144,19 @@ public class PlayerController : MonoBehaviour {
         moveState = MoveState.RunJump;
         isOnGround = false;
 
+        //when jump, block physics gravity, use my own gravity to simulate y move
+        r.gravityScale = 0;
+
         //v = gt
-        r.velocity = new Vector2(r.velocity.x, Physics2D.gravity.y * runJumpAnimeLength * 0.5f);
+        r.velocity = new Vector2(r.velocity.x, -Physics2D.gravity.y * runJumpAnimeLength * 0.5f);
+    }
+
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        if (coll.gameObject.tag.Equals("Ground"))
+        {
+            PlayerIdle();
+            isOnGround = true;
+        }
     }
 }
