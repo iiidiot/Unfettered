@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : MonoBehaviour
+{
 
     public GameObject playerIdleMesh;
     public GameObject playerRunMesh;
@@ -12,9 +13,7 @@ public class PlayerController : MonoBehaviour {
     //public float g_scale = 1.0f;
     public float speed = 1.0f;
     public float sideCollisionThreshold = -0.001f;
-    public Transform basePoint,middlePoint;
-    public Collider2D idleBaseColl;
-    public Collider2D runBaseColl, runHeadColl;
+    public Transform basePoint, middlePoint, topPoint;
     //====================================
 
     public int moveDirection = 1;
@@ -22,8 +21,9 @@ public class PlayerController : MonoBehaviour {
     public Animator idleAnimator;
     public Animator runAnimator;
 
-    public bool isOnGround = false;
-    public bool isMoveBlock = false;
+    public bool isOnGround = true;
+    public bool isMoveBlockLeft = false;
+    public bool isMoveBlockRight = false;
     public MoveState moveState = MoveState.Idle;
 
     public float idleJumpAnimeLength;
@@ -43,7 +43,8 @@ public class PlayerController : MonoBehaviour {
     //================================================================
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         idleAnimator = playerIdleMesh.transform.parent.GetComponent<Animator>();
         runAnimator = playerRunMesh.transform.parent.GetComponent<Animator>();
         r = GetComponent<Rigidbody2D>();
@@ -53,39 +54,59 @@ public class PlayerController : MonoBehaviour {
         runJumpAnimeLength = runAnimator.runtimeAnimatorController.animationClips[1].length;
 
         PlayerIdle();
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
 
+    // Update is called once per frame
+    void Update()
+    {
         //run
-        if (!isMoveBlock && (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A)))
+        if (Input.GetAxis("Horizontal") > 0 && !isMoveBlockRight) 
         {
-            if (isOnGround)
+            if (isOnGround && moveState!=MoveState.RunJump)
             {
                 PlayerRun();
             }
+            moveDirection = 1;
+            transform.localScale = new Vector3(1, 1, 1);
 
-            if (Input.GetKey(KeyCode.D))
+            float speedCo = 1f;
+            if (moveState == MoveState.IdleJump)
             {
-                moveDirection = 1;
-                transform.localScale = new Vector3(1, 1, 1);
+                speedCo = 0.5f;
             }
-            else
+            if (moveState == MoveState.RunJump)
             {
-                moveDirection = -1;
-                transform.localScale = new Vector3(-1, 1, 1);
+                speedCo = 0.77f;
             }
-
-            //Vector3 move = new Vector3(moveDirection * speed * Time.deltaTime, 0, 0);
-            //transform.Translate(move);
-
-            r.velocity = new Vector2(speed * moveDirection, r.velocity.y);
+            r.velocity = new Vector2(speedCo * speed * moveDirection, r.velocity.y);
         }
+        if (Input.GetAxis("Horizontal") < 0 && !isMoveBlockLeft)
+        {
+            if (isOnGround && moveState != MoveState.RunJump)
+            {
+                PlayerRun();
+            }
+            moveDirection = -1;
+            transform.localScale = new Vector3(-1, 1, 1);
+
+            float speedCo = 1f;
+            if (moveState == MoveState.IdleJump)
+            {
+                speedCo = 0.5f;
+            }
+            if (moveState == MoveState.RunJump)
+            {
+                speedCo = 0.77f;
+            }
+            r.velocity = new Vector2(speedCo * speed * moveDirection, r.velocity.y);
+        }
+
+        //Vector3 move = new Vector3(moveDirection * speed * Time.deltaTime, 0, 0);
+        //transform.Translate(move);
 
         //idle
         //when jump in the air, we don't put any key, it shouldn't be idle
-        if (!Input.anyKey && isOnGround)
+        if (Input.GetAxisRaw("Horizontal")<0.001f && Input.GetAxisRaw("Horizontal") > -0.001f && isOnGround && moveState != MoveState.IdleJump) 
         {
             PlayerIdle();
             r.velocity = new Vector2(0, r.velocity.y);
@@ -94,11 +115,11 @@ public class PlayerController : MonoBehaviour {
         //jump
         if (Input.GetKeyDown(KeyCode.Space) && isOnGround)
         {
-           if(moveState == MoveState.Idle)
+            if (moveState == MoveState.Idle)
             {
                 PlayerIdleJump();
             }
-           else if(moveState == MoveState.Run)
+            if (moveState == MoveState.Run)
             {
                 PlayerRunJump();
             }
@@ -108,8 +129,8 @@ public class PlayerController : MonoBehaviour {
 
     void FixedUpdate()
     {
-            float new_vy = r.velocity.y - m_g * Time.fixedDeltaTime;
-            r.velocity = new Vector2(r.velocity.x, new_vy);
+        float new_vy = r.velocity.y - m_g * Time.fixedDeltaTime;
+        r.velocity = new Vector2(r.velocity.x, new_vy);
     }
 
 
@@ -166,7 +187,8 @@ public class PlayerController : MonoBehaviour {
         {
             PlayerIdle();
             isOnGround = true;
-            isMoveBlock = false;
+            isMoveBlockRight = false;
+            isMoveBlockLeft = false;
         }
         else if (collision.gameObject.tag.Equals("Platform"))
         {
@@ -179,11 +201,26 @@ public class PlayerController : MonoBehaviour {
                 float val = Mathf.Abs(collision.contacts[0].point.x - collision.transform.position.x) - collision.collider.bounds.size.x / 2.0f;
                 if (val >= sideCollisionThreshold)//the player is on a side of the platform, not on the platform
                 {
-                    isOnGround = false;
+                    float height = collision.transform.position.y + 0.5f * collision.collider.bounds.size.y;
+
+                    if (basePoint.position.y < height)//在平台稍下，未在平台上
+                    {
+                        isOnGround = false;
+                    }
+                    else//在平台上
+                    {
+                        PlayerIdle();
+                        isOnGround = true;
+                        isMoveBlockRight = false;
+                        isMoveBlockLeft = false;
+                    }
                 }
                 else//on the platform
                 {
+                    PlayerIdle();
                     isOnGround = true;
+                    isMoveBlockRight = false;
+                    isMoveBlockLeft = false;
                 }
             }
         }
@@ -195,18 +232,58 @@ public class PlayerController : MonoBehaviour {
         {
             if (!isOnGround)//在平台边缘跳跃上平台时，堵塞住左右位移，这样就不会卡在半空的平台墙上
             {
-                isMoveBlock = true;
+                float height = collision.transform.position.y + 0.5f * collision.collider.bounds.size.y;
+
+                if (basePoint.position.y < height)
+                {
+                    if (collision.contacts[0].point.x > transform.position.x)//碰撞点在右侧
+                    {
+                        isMoveBlockRight = true;
+                        isMoveBlockLeft = false;
+                    }
+                    else//碰撞点在左侧
+                    {
+                        isMoveBlockRight = false;
+                        isMoveBlockLeft = true;
+                    }
+                }
+                else
+                {
+                    isOnGround = true;
+                }
             }
             else //on the ground 在平台边缘走，稍微落下一点卡在平台边缘的时候，让他不卡住，fall下来
             {
                 float val = Mathf.Abs(collision.contacts[0].point.x - collision.transform.position.x) - collision.collider.bounds.size.x / 2.0f;
                 if (val >= sideCollisionThreshold)//the player is on a side of the platform, not on the platform
                 {
+
+                    //高大的墙型平台
                     if (middlePoint.position.y >= collision.transform.position.y)
                     {
-                        isMoveBlock = true;
-                        isOnGround = false;
-                        runAnimator.Play("M1_Fall");
+                        float height = collision.transform.position.y + 0.5f * collision.collider.bounds.size.y;
+
+                        if (basePoint.position.y < height)
+                        {
+                            isMoveBlockRight = true;
+                            isMoveBlockLeft = true;
+                            isOnGround = false;
+                            runAnimator.Play("M1_Fall");
+                        }
+                    }
+
+                    //很窄很细的长方形平台
+                    else
+                    {
+                        float height = collision.transform.position.y + 0.5f * collision.collider.bounds.size.y;
+
+                        if (topPoint.position.y > height)
+                        {
+                            isMoveBlockRight = true;
+                            isMoveBlockLeft = true;
+                            isOnGround = false;
+                            runAnimator.Play("M1_Fall");
+                        }
                     }
                 }
             }
@@ -225,7 +302,8 @@ public class PlayerController : MonoBehaviour {
 
             if (basePoint.position.y > height)
             {
-                isMoveBlock = false;
+                isMoveBlockRight = false;
+                isMoveBlockLeft = false;
                 isOnGround = false;
                 if (moveState == MoveState.Run)
                 {
@@ -249,18 +327,7 @@ public class PlayerController : MonoBehaviour {
     {
         playerIdleMesh.SetActive(true);
         playerRunMesh.SetActive(false);
-       // AllIdleCollSet(true);
+        // AllIdleCollSet(true);
         //AllRunCollSet(false);
-    }
-
-    void AllIdleCollSet(bool b)
-    {
-        idleBaseColl.enabled = b;
-    }
-
-    void AllRunCollSet(bool b)
-    {
-        runBaseColl.enabled = b;
-        runHeadColl.enabled = b;
     }
 }
