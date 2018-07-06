@@ -726,8 +726,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerIdleMesh: {fileID: 941206152}
   playerRunMesh: {fileID: 1483185427}
-  m_g: 80
-  speed: 12
+  m_g: 150
+  speed: 15
   sideCollisionThreshold: -0.1
   basePoint: {fileID: 1539743039}
   middlePoint: {fileID: 1428760308}
