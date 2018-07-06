@@ -4,17 +4,26 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
-    public GameObject playerIdle;
-    public GameObject playerRun;
+    public GameObject playerIdleMesh;
+    public GameObject playerRunMesh;
 
+    //set by hand
     public float m_g = 9.81f;
+    //public float g_scale = 1.0f;
     public float speed = 1.0f;
+    public float sideCollisionThreshold = -0.001f;
+    public Transform basePoint,middlePoint;
+    public Collider2D idleBaseColl;
+    public Collider2D runBaseColl, runHeadColl;
+    //====================================
+
     public int moveDirection = 1;
 
     public Animator idleAnimator;
     public Animator runAnimator;
 
     public bool isOnGround = false;
+    public bool isMoveBlock = false;
     public MoveState moveState = MoveState.Idle;
 
     public float idleJumpAnimeLength;
@@ -35,8 +44,8 @@ public class PlayerController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        idleAnimator = playerIdle.transform.parent.GetComponent<Animator>();
-        runAnimator = playerRun.transform.parent.GetComponent<Animator>();
+        idleAnimator = playerIdleMesh.transform.parent.GetComponent<Animator>();
+        runAnimator = playerRunMesh.transform.parent.GetComponent<Animator>();
         r = GetComponent<Rigidbody2D>();
 
         //jump is the second anime clip in animator, so the array index is 1
@@ -50,9 +59,13 @@ public class PlayerController : MonoBehaviour {
 	void Update () {
 
         //run
-        if (isOnGround && (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A)))
+        if (!isMoveBlock && (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A)))
         {
-            PlayerRun();
+            if (isOnGround)
+            {
+                PlayerRun();
+            }
+
             if (Input.GetKey(KeyCode.D))
             {
                 moveDirection = 1;
@@ -64,16 +77,15 @@ public class PlayerController : MonoBehaviour {
                 transform.localScale = new Vector3(-1, 1, 1);
             }
 
-
             //Vector3 move = new Vector3(moveDirection * speed * Time.deltaTime, 0, 0);
             //transform.Translate(move);
 
             r.velocity = new Vector2(speed * moveDirection, r.velocity.y);
-
         }
 
         //idle
-        if (!Input.anyKey && moveState!=MoveState.IdleJump)
+        //when jump in the air, we don't put any key, it shouldn't be idle
+        if (!Input.anyKey && isOnGround)
         {
             PlayerIdle();
             r.velocity = new Vector2(0, r.velocity.y);
@@ -82,11 +94,11 @@ public class PlayerController : MonoBehaviour {
         //jump
         if (Input.GetKeyDown(KeyCode.Space) && isOnGround)
         {
-           if(GameInfo.PlayerGlobalInfo.moveState == GameInfo.ChMoveState.Idle)
+           if(moveState == MoveState.Idle)
             {
                 PlayerIdleJump();
             }
-           else if(GameInfo.PlayerGlobalInfo.moveState == GameInfo.ChMoveState.Run)
+           else if(moveState == MoveState.Run)
             {
                 PlayerRunJump();
             }
@@ -96,27 +108,14 @@ public class PlayerController : MonoBehaviour {
 
     void FixedUpdate()
     {
-        if (r.gravityScale == 0)
-        {
             float new_vy = r.velocity.y - m_g * Time.fixedDeltaTime;
             r.velocity = new Vector2(r.velocity.x, new_vy);
-        }
     }
 
-    void PlayerRun()
-    {
-        r.gravityScale = 1;
-        playerIdle.SetActive(false);
-        playerRun.SetActive(true);
-
-        moveState = MoveState.Run;
-    }
 
     void PlayerIdle()
     {
-        r.gravityScale = 1;
-        playerIdle.SetActive(true);
-        playerRun.SetActive(false);
+        Run2Idle();
 
         moveState = MoveState.Idle;
 
@@ -127,10 +126,8 @@ public class PlayerController : MonoBehaviour {
     void PlayerIdleJump()
     {
         moveState = MoveState.IdleJump;
-        isOnGround = false;
 
-        //when jump, block physics gravity, use my own gravity to simulate y move
-        r.gravityScale = 0;
+        isOnGround = false;
 
         //v = gt
         r.velocity = new Vector2(r.velocity.x, m_g * idleJumpAnimeLength * 0.5f);
@@ -139,24 +136,131 @@ public class PlayerController : MonoBehaviour {
         idleAnimator.SetBool("isIdleJump", true);
     }
 
+    void PlayerRun()
+    {
+        Idle2Run();
+
+        moveState = MoveState.Run;
+
+        runAnimator.Play("M1_Run");
+        runAnimator.SetBool("isRun", true);
+        runAnimator.SetBool("isRunJump", false);
+    }
+
     void PlayerRunJump()
     {
         moveState = MoveState.RunJump;
+
         isOnGround = false;
 
-        //when jump, block physics gravity, use my own gravity to simulate y move
-        r.gravityScale = 0;
-
         //v = gt
-        r.velocity = new Vector2(r.velocity.x, -Physics2D.gravity.y * runJumpAnimeLength * 0.5f);
+        r.velocity = new Vector2(r.velocity.x, m_g * runJumpAnimeLength * 0.5f);
+
+        runAnimator.SetBool("isRun", false);
+        runAnimator.SetBool("isRunJump", true);
     }
 
-    void OnCollisionEnter2D(Collision2D coll)
+    void OnCollisionEnter2D(Collision2D collision)
     {
-        if (coll.gameObject.tag.Equals("Ground"))
+        if (collision.gameObject.tag.Equals("Ground"))
         {
             PlayerIdle();
             isOnGround = true;
+            isMoveBlock = false;
         }
+        else if (collision.gameObject.tag.Equals("Platform"))
+        {
+            if (moveState == MoveState.Run || moveState == MoveState.Idle)
+            {
+                isOnGround = true;
+            }
+            else
+            {
+                float val = Mathf.Abs(collision.contacts[0].point.x - collision.transform.position.x) - collision.collider.bounds.size.x / 2.0f;
+                if (val >= sideCollisionThreshold)//the player is on a side of the platform, not on the platform
+                {
+                    isOnGround = false;
+                }
+                else//on the platform
+                {
+                    isOnGround = true;
+                }
+            }
+        }
+    }
+
+    void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag.Equals("Platform"))
+        {
+            if (!isOnGround)//在平台边缘跳跃上平台时，堵塞住左右位移，这样就不会卡在半空的平台墙上
+            {
+                isMoveBlock = true;
+            }
+            else //on the ground 在平台边缘走，稍微落下一点卡在平台边缘的时候，让他不卡住，fall下来
+            {
+                float val = Mathf.Abs(collision.contacts[0].point.x - collision.transform.position.x) - collision.collider.bounds.size.x / 2.0f;
+                if (val >= sideCollisionThreshold)//the player is on a side of the platform, not on the platform
+                {
+                    if (middlePoint.position.y >= collision.transform.position.y)
+                    {
+                        isMoveBlock = true;
+                        isOnGround = false;
+                        runAnimator.Play("M1_Fall");
+                    }
+                }
+            }
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag.Equals("Platform"))
+        {
+            //跳离平台的时候，如果人物最低部位依然比平台高，则判定为从平台向外跳，这时候如果是跑下去的，动画变成fall，如果是跳出去的，不影响
+            //falling down start===============
+
+            //platform's height
+            float height = collision.transform.position.y + 0.5f * collision.collider.bounds.size.y;
+
+            if (basePoint.position.y > height)
+            {
+                isMoveBlock = false;
+                isOnGround = false;
+                if (moveState == MoveState.Run)
+                {
+                    runAnimator.Play("M1_Fall");
+                }
+            }
+
+            //falling down end===============
+        }
+    }
+
+    void Idle2Run()
+    {
+        playerIdleMesh.SetActive(false);
+        playerRunMesh.SetActive(true);
+        //AllIdleCollSet(false);
+        //AllRunCollSet(true);
+    }
+
+    void Run2Idle()
+    {
+        playerIdleMesh.SetActive(true);
+        playerRunMesh.SetActive(false);
+       // AllIdleCollSet(true);
+        //AllRunCollSet(false);
+    }
+
+    void AllIdleCollSet(bool b)
+    {
+        idleBaseColl.enabled = b;
+    }
+
+    void AllRunCollSet(bool b)
+    {
+        runBaseColl.enabled = b;
+        runHeadColl.enabled = b;
     }
 }
