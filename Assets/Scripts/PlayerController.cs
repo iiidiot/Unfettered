@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
 
     public float idleJumpAnimeLength;
     public float runJumpAnimeLength;
+    public bool jumpBlock = false;
 
     //enum type   
     public enum MoveState
@@ -59,10 +60,22 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        KeyBoardControl();
+
+    }
+
+    void FixedUpdate()
+    {
+        float new_vy = r.velocity.y - m_g * Time.fixedDeltaTime;
+        r.velocity = new Vector2(r.velocity.x, new_vy);
+    }
+
+    void KeyBoardControl()
+    {
         //run
-        if (Input.GetAxis("Horizontal") > 0 && !isMoveBlockRight) 
+        if (Input.GetAxis("Horizontal") > 0 && !isMoveBlockRight)
         {
-            if (isOnGround && moveState!=MoveState.RunJump)
+            if (isOnGround && moveState != MoveState.RunJump)
             {
                 PlayerRun();
             }
@@ -80,6 +93,7 @@ public class PlayerController : MonoBehaviour
             }
             r.velocity = new Vector2(speedCo * speed * moveDirection, r.velocity.y);
         }
+        //run on another directon
         if (Input.GetAxis("Horizontal") < 0 && !isMoveBlockLeft)
         {
             if (isOnGround && moveState != MoveState.RunJump)
@@ -106,7 +120,7 @@ public class PlayerController : MonoBehaviour
 
         //idle
         //when jump in the air, we don't put any key, it shouldn't be idle
-        if (Input.GetAxisRaw("Horizontal")<0.001f && Input.GetAxisRaw("Horizontal") > -0.001f && isOnGround && moveState != MoveState.IdleJump) 
+        if (Input.GetAxisRaw("Horizontal") < 0.001f && Input.GetAxisRaw("Horizontal") > -0.001f && isOnGround && moveState != MoveState.IdleJump)
         {
             PlayerIdle();
             r.velocity = new Vector2(0, r.velocity.y);
@@ -115,6 +129,7 @@ public class PlayerController : MonoBehaviour
         //jump
         if (Input.GetKeyDown(KeyCode.Space) && isOnGround)
         {
+            jumpBlock = true;
             if (moveState == MoveState.Idle)
             {
                 PlayerIdleJump();
@@ -124,15 +139,25 @@ public class PlayerController : MonoBehaviour
                 PlayerRunJump();
             }
         }
+        if(Input.GetKeyUp(KeyCode.Space))
+        {
+            jumpBlock = false;
+        }
+
+        //magic 释放符箓
+        if (Input.GetAxis("Magic1") > 0)
+        {
+            if (moveState == MoveState.Idle || moveState == MoveState.IdleJump)
+            {
+                idleAnimator.Play("M1_IdleMagic", 1);
+            }
+            if (moveState == MoveState.Run || moveState == MoveState.RunJump)
+            {
+                runAnimator.Play("M1_RunMagic", 1);
+            }
+        }
 
     }
-
-    void FixedUpdate()
-    {
-        float new_vy = r.velocity.y - m_g * Time.fixedDeltaTime;
-        r.velocity = new Vector2(r.velocity.x, new_vy);
-    }
-
 
     void PlayerIdle()
     {
