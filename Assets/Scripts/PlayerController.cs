@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 
     public GameObject playerIdleMesh;
     public GameObject playerRunMesh;
+    public GameObject idleFire, runFire;
 
     //set by hand
     public float m_g = 9.81f;
@@ -343,7 +344,11 @@ public class PlayerController : MonoBehaviour
     void Idle2Run()
     {
         playerIdleMesh.SetActive(false);
+        idleFire.SetActive(false);
+
         playerRunMesh.SetActive(true);
+        runFire.SetActive(true);
+       
         //AllIdleCollSet(false);
         //AllRunCollSet(true);
     }
@@ -351,7 +356,11 @@ public class PlayerController : MonoBehaviour
     void Run2Idle()
     {
         playerIdleMesh.SetActive(true);
+        idleFire.SetActive(true);
+
         playerRunMesh.SetActive(false);
+        runFire.SetActive(false);
+       
         // AllIdleCollSet(true);
         //AllRunCollSet(false);
     }
