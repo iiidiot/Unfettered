@@ -93,7 +93,12 @@ public class PlayerController : MonoBehaviour
                 PlayerRun();
             }
             GameInfo.PlayerMoveDirection = 1;
-            transform.localScale = new Vector3(GameInfo.PlayerMoveDirection, 1, 1);
+            float s_x = transform.localScale.x;
+            if (s_x < 0)
+            {
+                s_x = -s_x;
+            }
+            transform.localScale = new Vector3(s_x, transform.localScale.y, transform.localScale.z);
 
             float speedCo = 1f;
             if (moveState == MoveState.IdleJump)
@@ -114,7 +119,12 @@ public class PlayerController : MonoBehaviour
                 PlayerRun();
             }
             GameInfo.PlayerMoveDirection = -1;
-            transform.localScale = new Vector3(GameInfo.PlayerMoveDirection, 1, 1);
+            float s_x = transform.localScale.x;
+            if (s_x > 0)
+            {
+                s_x = -s_x;
+            }
+            transform.localScale = new Vector3(s_x, transform.localScale.y, transform.localScale.z);
 
             float speedCo = 1f;
             if (moveState == MoveState.IdleJump)
@@ -271,12 +281,20 @@ public class PlayerController : MonoBehaviour
                         isMoveBlockLeft = false;
                     }
                 }
-                else//on the platform
+                else//between the 2 sides of the platform
                 {
-                    PlayerIdle();
-                    isOnGround = true;
-                    isMoveBlockRight = false;
-                    isMoveBlockLeft = false;
+                    float height = collision.transform.position.y + 0.5f * collision.collider.bounds.size.y;
+                    if (basePoint.position.y < height)//在平台下，未在平台上
+                    {
+                        isOnGround = false;
+                    }
+                    else
+                    {
+                        PlayerIdle();
+                        isOnGround = true;
+                        isMoveBlockRight = false;
+                        isMoveBlockLeft = false;
+                    }
                 }
             }
         }

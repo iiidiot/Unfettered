@@ -7,21 +7,24 @@ public class Fu
     public FuType type;
     public string tex_path;
     public string prefab_path;
-    public float move_speed;
+    public Vector2 move_speed;
+    public int cost;
 
-    public Fu(FuType _type, string _tex_path, string _prefab_path, float _ms)
+    public Fu(FuType _type, string _tex_path, string _prefab_path, Vector2 _ms, int _cost)
     {
         type = _type;
         tex_path = _tex_path;
         prefab_path = _prefab_path;
         move_speed = _ms;
+        cost = _cost;
     }
     public Fu()
     {
         type = 0;
         tex_path = "";
         prefab_path = "";
-        move_speed = 0;
+        move_speed = Vector2.zero;
+        cost = 0;
     }
 }
 
@@ -55,6 +58,9 @@ public enum FuType
 
     //Water
     FrostBall,
+
+    //Metal
+    MetalSwordSummon,
 
     Count
 }

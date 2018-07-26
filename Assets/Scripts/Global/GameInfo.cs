@@ -18,7 +18,7 @@ public static class GameInfo
 
     public static int PlayerSkillAnimeLayer = 1;
 
-    public static int PlayerTotalCost = 3;
+    public static int PlayerTotalCost = 9;
 
     //fu==========================================
     public static List<Fu> fuList;//static table for all fu

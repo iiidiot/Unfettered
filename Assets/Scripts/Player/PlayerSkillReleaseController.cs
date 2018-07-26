@@ -76,7 +76,7 @@ public class PlayerSkillReleaseController : MonoBehaviour {
 
         GameObject projectileParticle = Instantiate(skillPreb, skillRlsP.position, skillRlsP.rotation) as GameObject;
         Rigidbody2D pr = projectileParticle.GetComponent<Rigidbody2D>();
-        pr.velocity = new Vector2(GameInfo.PlayerMoveDirection * f.move_speed, 0);
+        pr.velocity = new Vector2(GameInfo.PlayerMoveDirection * f.move_speed.x, f.move_speed.y);
 
         //后坐力
         //Rigidbody2D player_r = GetComponent<Rigidbody2D>();

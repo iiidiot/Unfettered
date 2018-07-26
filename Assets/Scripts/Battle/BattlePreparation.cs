@@ -68,13 +68,16 @@ public class BattlePreparation : MonoBehaviour {
         if (Input.GetButtonDown("Interact"))
         {
             GameInfo.battleFuList.Clear();
-            for (int i = 0; i < GameInfo.PlayerTotalCost; i++)
+            for (int i = 0; i < GameInfo.PlayerTotalCost;)
             {
-                GameInfo.battleFuList.Add(
-                    new FuItem(i,
+                FuItem ft = new FuItem(i,
                     FuQuality.Good,
-                    (FuType)Random.Range(0, (float)FuType.Count))
-                    );
+                    (FuType)Random.Range(0, (float)FuType.Count));
+
+                GameInfo.battleFuList.Add(ft);
+
+                Fu f = GameInfo.fuList.Find(c => c.type == ft.type);
+                i += f.cost;
             }
             fuInfo.gameObject.SetActive(true);
             idleFire.gameObject.SetActive(true);
