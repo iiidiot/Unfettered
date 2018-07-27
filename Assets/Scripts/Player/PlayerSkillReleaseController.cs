@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerSkillReleaseController : MonoBehaviour {
-    
+public class PlayerSkillReleaseController : MonoBehaviour
+{
+
     public GameObject playerIdleMesh;
     public GameObject playerRunMesh;
     public Transform skillRlsP;
@@ -12,7 +13,6 @@ public class PlayerSkillReleaseController : MonoBehaviour {
     public string runSkillAnimeName = "M1_RunMagic";
 
     public float idleRlsSkillMoment, runRlsSkillMoment;
-    public float rlsSkillCD = 3.0f;//how many seconds
 
     public bool isSkillSent = false;
 
@@ -23,19 +23,19 @@ public class PlayerSkillReleaseController : MonoBehaviour {
     public float timeCount = 0;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         idleAnimator = playerIdleMesh.transform.parent.GetComponent<Animator>();
         runAnimator = playerRunMesh.transform.parent.GetComponent<Animator>();
-        
-        GameInfo.PlayerRlsSkillCD = rlsSkillCD;     
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
         idleAnimatorInfo = idleAnimator.GetCurrentAnimatorStateInfo(GameInfo.PlayerSkillAnimeLayer);
         runAnimatorInfo = runAnimator.GetCurrentAnimatorStateInfo(GameInfo.PlayerSkillAnimeLayer);
 
-        if ((idleAnimatorInfo.normalizedTime > idleRlsSkillMoment) 
+        if ((idleAnimatorInfo.normalizedTime > idleRlsSkillMoment)
             && (idleAnimatorInfo.IsName(idleSkillAnimeName))
             && !isSkillSent)//normalizedTime: 范围0 -- 1,  0是动作开始，1是动作结束
         {
@@ -72,14 +72,46 @@ public class PlayerSkillReleaseController : MonoBehaviour {
         GameInfo.battleFuList.RemoveAt(GameInfo.PlayerCurrentSkillNum);
 
         Fu f = GameInfo.fuList.Find(c => c.type == ft);
-        Object skillPreb = Resources.Load(GameInfo.EffectPrefabResDir + f.prefab_path);
 
-        GameObject projectileParticle = Instantiate(skillPreb, skillRlsP.position, skillRlsP.rotation) as GameObject;
-        Rigidbody2D pr = projectileParticle.GetComponent<Rigidbody2D>();
-        pr.velocity = new Vector2(GameInfo.PlayerMoveDirection * f.move_speed.x, f.move_speed.y);
+        GameInfo.PlayerRlsSkillCD = f.cd;
+
+        Transform swords = GameObject.Find("Root/Swords").transform;
+
+        switch (f.type)
+        {
+            case FuType.MetalSwordMoveH:
+                for (int i = 0; i < swords.childCount; i++)
+                {
+                    Transform tsf = swords.GetChild(i);
+                    MetalSwordMoveH msm = tsf.GetComponent<MetalSwordMoveH>();
+                    if (msm) { msm.enabled = true; }
+                    
+                    msm.beginPrep = true;
+                    msm.speed = f.move_speed.x;
+                    msm.moveDirection = (transform.position.x - tsf.position.x) > 0 ? 1 : -1;
+                    msm.newPos = tsf.position;
+                }
+                break;
+
+            case FuType.MetalSwordSummon:
+                Object skillPreb = Resources.Load(GameInfo.EffectPrefabResDir + f.prefab_path);
+                GameObject projectileParticle = Instantiate(skillPreb, skillRlsP.position, skillRlsP.rotation) as GameObject;
+                projectileParticle.transform.parent = swords;
+                Rigidbody2D pr = projectileParticle.GetComponent<Rigidbody2D>();
+                pr.velocity = new Vector2(0, f.move_speed.y);
+                break;
+
+            default:
+                skillPreb = Resources.Load(GameInfo.EffectPrefabResDir + f.prefab_path);
+                projectileParticle = Instantiate(skillPreb, skillRlsP.position, skillRlsP.rotation) as GameObject;
+                pr = projectileParticle.GetComponent<Rigidbody2D>();
+                pr.velocity = new Vector2(GameInfo.PlayerMoveDirection * f.move_speed.x, f.move_speed.y);
+                break;
+        }
 
         //后坐力
         //Rigidbody2D player_r = GetComponent<Rigidbody2D>();
         //player_r.velocity = (new Vector2(-GameInfo.PlayerMoveDirection * 100, 0));
     }
+    
 }

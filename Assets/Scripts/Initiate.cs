@@ -5,7 +5,7 @@ using UnityEngine;
 public class Initiate : MonoBehaviour {
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
         FuScriptableObject f = Resources.Load<FuScriptableObject>(GameInfo.PersistentResDir + GameInfo.FuListFileName);
         GameInfo.fuList = f.fuList;
         GameInfo.battleFuList = new List<FuItem>();

@@ -9,14 +9,16 @@ public class Fu
     public string prefab_path;
     public Vector2 move_speed;
     public int cost;
+    public float cd;//in seconds
 
-    public Fu(FuType _type, string _tex_path, string _prefab_path, Vector2 _ms, int _cost)
+    public Fu(FuType _type, string _tex_path, string _prefab_path, Vector2 _ms, int _cost, float _cd)
     {
         type = _type;
         tex_path = _tex_path;
         prefab_path = _prefab_path;
         move_speed = _ms;
         cost = _cost;
+        cd = _cd;
     }
     public Fu()
     {
@@ -25,6 +27,7 @@ public class Fu
         prefab_path = "";
         move_speed = Vector2.zero;
         cost = 0;
+        cd = 0;
     }
 }
 
@@ -61,6 +64,7 @@ public enum FuType
 
     //Metal
     MetalSwordSummon,
+    MetalSwordMoveH,
 
     Count
 }

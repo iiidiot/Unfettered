@@ -8,10 +8,10 @@ public static class GameInfo
     public static string PersistentResDir = "PersistentData/";
     public static string EffectPrefabResDir = "Prefabs/Effects/";
 
-    //player===============================
+    //Player===============================
     public static int PlayerMoveDirection = 1;
 
-    //skill 
+    //--skill 
     public static float PlayerRlsSkillCD = 3.0f;
     public static bool BlockPlayerSkillRls = false;
     public static int PlayerCurrentSkillNum = 0;//what key is input? j 1 /k 2 /l 3
@@ -20,8 +20,11 @@ public static class GameInfo
 
     public static int PlayerTotalCost = 9;
 
-    //fu==========================================
+    //Fu==========================================
     public static List<Fu> fuList;//static table for all fu
     public static List<FuItem> battleFuList;// the list during battle
+
+
+    //Monster/Enemy========================================
 }
 

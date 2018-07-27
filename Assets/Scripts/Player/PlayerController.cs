@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
 
     public GameObject playerIdleMesh;
     public GameObject playerRunMesh;
-    public GameObject idleFire, runFire;
+    public GameObject idleFire, runFire;//parent
 
     //set by hand
     public float m_g = 9.81f;

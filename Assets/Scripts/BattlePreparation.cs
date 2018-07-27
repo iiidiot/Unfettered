@@ -11,6 +11,8 @@ public class BattlePreparation : MonoBehaviour {
 
     public Transform idleFire, runFire;
 
+    public bool isInRange = false;
+
     // Use this for initialization
     void Start () {
 		
@@ -44,14 +46,19 @@ public class BattlePreparation : MonoBehaviour {
                 }
             }
         }
+
+        if(isInRange)
+        {
+            battlePrepare();
+        }
     }
 
-    void OnTriggerStay2D(Collider2D collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.gameObject.tag == "Player")
         {
             notion.text = "Press 'F' to battle preparation";
-            battlePrepare();
+            isInRange = true;
         }
     }
     void OnTriggerExit2D(Collider2D collision)
@@ -59,6 +66,7 @@ public class BattlePreparation : MonoBehaviour {
         if (collision.gameObject.tag == "Player")
         {
             notion.text = "";
+            isInRange = false;
         }
     }
 
@@ -67,6 +75,7 @@ public class BattlePreparation : MonoBehaviour {
     {
         if (Input.GetButtonDown("Interact"))
         {
+            print("prepare!");
             GameInfo.battleFuList.Clear();
             for (int i = 0; i < GameInfo.PlayerTotalCost;)
             {

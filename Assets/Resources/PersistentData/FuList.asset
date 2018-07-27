@@ -17,13 +17,22 @@ MonoBehaviour:
     prefab_path: FireBallMissile/OBJ
     move_speed: {x: 30, y: 0}
     cost: 1
+    cd: 1
   - type: 1
     tex_path: 
     prefab_path: FrostMissile/OBJ
     move_speed: {x: 30, y: 0}
     cost: 1
+    cd: 1
   - type: 2
     tex_path: 
-    prefab_path: Metal/Sword/sword01
-    move_speed: {x: 0, y: -66}
+    prefab_path: Metal/Sword01
+    move_speed: {x: 0, y: -77}
     cost: 2
+    cd: 2
+  - type: 3
+    tex_path: 
+    prefab_path: Metal/Sword01
+    move_speed: {x: 100, y: 0}
+    cost: 1
+    cd: 2
